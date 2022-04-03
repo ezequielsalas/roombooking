@@ -1,0 +1,42 @@
+version: "3.6"
+
+volumes:
+  pg_data:
+
+services:
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+
+  api:
+    build:
+      context: .
+      target: development
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - .env
+  celery-worker:
+    build:
+      context: .
+      target: development
+    command: celery -A booking_core worker -l INFO
+    volumes:
+      - .:/code
+    depends_on:
+      - api
+      - redis
+      - db
+    env_file:
+      - .env
+  redis:
+    image: redis:6-alpine

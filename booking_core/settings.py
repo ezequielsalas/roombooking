@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 import os
 from pathlib import Path
+from .envs import env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,12 +20,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-j1=uw+5sg@+olde-bc*e0l_h^!h=%bvjw17@or(o9xv!6%p-3u'
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 DJANGO_APPS = ['django.contrib.admin',
@@ -74,10 +75,21 @@ WSGI_APPLICATION = 'booking_core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "HOST": env("POSTGRES_HOST"),
+        "NAME": env("POSTGRES_NAME"),
+        "USER": env("POSTGRES_USER"),
+        "PASSWORD": env("POSTGRES_PASSWORD"),
+        "PORT": env("POSTGRES_PORT"),
+        "OPTIONS": {"sslmode": "prefer"},
     }
 }
 
@@ -124,9 +136,10 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10
 }
-REDIS_HOST = 'redis://127.0.0.1:6379'
-CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", f"{REDIS_HOST}/0")
-CELERY_RESULT_BACKEND = os.environ.get("CELERY_BROKER", f"{REDIS_HOST}/0")
+
+REDIS_HOST = env("REDIS_HOST")
+CELERY_BROKER_URL = env("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND")
 CELERY_ONCE = {
   'backend': 'celery_once.backends.Redis',
   'settings': {

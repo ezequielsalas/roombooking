@@ -7,7 +7,7 @@ from booking_core import settings
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'booking_core.settings')
 
-app = Celery('roombooking')
+app = Celery('booking_core')
 app.conf.ONCE = settings.CELERY_ONCE
 
 # Using a string here means the worker doesn't have to serialize

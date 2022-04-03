@@ -1,5 +1,4 @@
 from celery_once import AlreadyQueued
-from django.shortcuts import render
 
 # Create your views here.
 from rest_framework import viewsets, permissions, status
