@@ -3,9 +3,12 @@ import os
 from celery import Celery
 
 # Set the default Django settings module for the 'celery' program.
+from booking_core import settings
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'booking_core.settings')
 
 app = Celery('roombooking')
+app.conf.ONCE = settings.CELERY_ONCE
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.

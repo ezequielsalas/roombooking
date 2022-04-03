@@ -8,5 +8,5 @@ class Booking(models.Model):
     deleted_at = models.DateTimeField(null=True)
 
     class Meta:
-        constraints = [models.UniqueConstraint(fields=['created_at'], condition=Q(deleted_at__isnull=False),
+        constraints = [models.UniqueConstraint(fields=['created_at','room'], condition=Q(deleted_at__isnull=True),
                                               name='unique_booking_per_time')]
