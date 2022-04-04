@@ -1,7 +1,5 @@
 # RoomBooking
 
-Solution for Avaros' Api challenge
-
 ## Description
 
 Thi is a simple api that allow doctors reserve a room.
