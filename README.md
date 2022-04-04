@@ -18,7 +18,7 @@ Thi is a simple api that allow doctors reserve a room.
 ### Installing
 
 * Download and install python, you could get it from its official website at https://www.python.org
-* Download the roombooking, from https://www.github.com/
+* Download the roombooking, from https://github.com/ezequielsalas/roombooking
 * Create and activate your virtualenv: 
   * > `python -m venv env`
   * > `source env/bin/activate`
