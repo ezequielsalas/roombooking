@@ -42,6 +42,7 @@ FROM base AS development
 EXPOSE 8000
 COPY requirements-dev.txt ./
 RUN pip install --no-cache-dir -r requirements-dev.txt
+COPY . .
 COPY ./tools/scripts/wait_for_database.sh /entrypoint
 RUN chmod +x /entrypoint
 ENTRYPOINT ["/entrypoint"]

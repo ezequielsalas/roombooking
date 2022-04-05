@@ -1,7 +1,7 @@
 #!/bin/sh
 
 NAME="booking_core"                      # name of the application
-DJANGODIR=/code/accruvia_core             # Django project directory
+DJANGODIR=/code/booking_core             # Django project directory
 NUM_WORKERS=3                             # number of Gunicorn worker processes
 DJANGO_WSGI_MODULE=booking_core.wsgi     # WSGI module name
 # The maximum number of requests a worker will process before restarting. Limit the damage of memory leaks.

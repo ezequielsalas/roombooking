@@ -2,7 +2,7 @@ import environ
 
 env = environ.Env(
     # Django
-    SECRET_KEY=(str, ''),
+    SECRET_KEY=(str, 'insecure'),
     DEBUG=(bool, False),
     POSTGRES_HOST=(str, None),
     POSTGRES_DB=(str, None),

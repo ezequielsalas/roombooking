@@ -38,5 +38,18 @@ services:
       - db
     env_file:
       - .env
+  celery-beat:
+    build:
+      context: .
+      target: development
+    command: celery -A booking_core beat -l INFO
+    volumes:
+      - .:/code
+    depends_on:
+      - api
+      - redis
+      - db
+    env_file:
+      - .env
   redis:
     image: redis:6-alpine
