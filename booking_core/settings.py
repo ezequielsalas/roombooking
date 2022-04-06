@@ -11,7 +11,11 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 import os
 from pathlib import Path
+
+from celery.schedules import crontab
+
 from .envs import env
+#from booking import tasks
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -36,6 +40,7 @@ DJANGO_APPS = ['django.contrib.admin',
                'django.contrib.staticfiles',
                'rest_framework',
                'corsheaders',
+
                ]
 
 ROOMBOOKING_APPS = ['booking', ]
@@ -80,12 +85,6 @@ WSGI_APPLICATION = 'booking_core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -155,4 +154,11 @@ CELERY_ONCE = {
     'url': REDIS_HOST,
     'default_timeout': 60 * 60
   }
+}
+
+CELERY_BEAT_SCHEDULE = {
+    'send-notification-on-friday-afternoon': {
+         'task': 'release_rooms',
+         'schedule': crontab(minute='*'),
+        },
 }

@@ -18,12 +18,13 @@ class BookingViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        serializer = BookingSerializer(data=request.data, many=False)
+        expire_at = request.data.pop('expire_at')
+        serializer = BookingSerializer(data=request.data, many=False, partial=True)
         serializer.is_valid(raise_exception=True)
-        booking_requested = serializer.validated_data
 
+        booking_requested = serializer.validated_data
         try:
-            reserve_room.delay(booking_requested.get('room'))
+            reserve_room.delay(booking_requested.get('room'), expire_at)
         except AlreadyQueued:
             return Response({"error": "This room is not available"}, status=status.HTTP_400_BAD_REQUEST)
         return Response({'message': "Your request was received"}, status=status.HTTP_200_OK)
@@ -45,8 +46,8 @@ class BookingViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         booking_requested = serializer.validated_data
 
-        reservetions = Booking.search_by_room(booking_requested.get('room'))
-        if not reservetions.exists():
+        reservations = Booking.search_by_room(booking_requested.get('room'))
+        if not reservations.exists():
             return Response({'message': f"The room {booking_requested.get('room')} is available"},
                             status=status.HTTP_200_OK)
 

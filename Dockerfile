@@ -49,5 +49,6 @@ ENTRYPOINT ["/entrypoint"]
 ARG BUILD_NO="development"
 ENV BUILD=$BUILD_NO
 ENV DJANGO_SETTINGS_MODULE="booking_core.dev_settings"
+
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 

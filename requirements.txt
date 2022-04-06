@@ -26,3 +26,4 @@ gunicorn==20.1.0
 django-environ==0.8.1
 psycopg2-binary==2.8.4
 django-cors-headers==3.10.0
+django_celery_beat
