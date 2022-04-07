@@ -18,13 +18,13 @@ class BookingViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        expire_at = request.data.pop('expire_at')
+        expire = request.data.get('expire', None)
         serializer = BookingSerializer(data=request.data, many=False, partial=True)
         serializer.is_valid(raise_exception=True)
 
         booking_requested = serializer.validated_data
         try:
-            reserve_room.delay(booking_requested.get('room'), expire_at)
+            reserve_room.delay(booking_requested.get('room'), expire_at=expire)
         except AlreadyQueued:
             return Response({"error": "This room is not available"}, status=status.HTTP_400_BAD_REQUEST)
         return Response({'message': "Your request was received"}, status=status.HTTP_200_OK)
@@ -46,9 +46,24 @@ class BookingViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         booking_requested = serializer.validated_data
 
-        reservations = Booking.search_by_room(booking_requested.get('room'))
-        if not reservations.exists():
+        if Booking.is_available(booking_requested.get('room')):
             return Response({'message': f"The room {booking_requested.get('room')} is available"},
                             status=status.HTTP_200_OK)
 
         return Response({'message': "Sorry, the room is not available"}, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['POST'], permission_classes=[permissions.IsAuthenticated])
+    def schedule_booking(self, request, *args, **kwargs):
+        room = request.data.get("room")
+        schedule_start = request.data.get("reservation_start")
+        schedule_end = request.data.get("reservation_end")
+
+        if not room or not schedule_start or not schedule_end:
+            return Response({"error": "room, start and End are required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            reserve_room.delay(room, start=schedule_start, end=schedule_end)
+        except AlreadyQueued:
+            return Response({"error": "This room is not available"}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({'message': "Your request was received"}, status=status.HTTP_200_OK)

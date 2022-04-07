@@ -9,13 +9,11 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-import os
 from pathlib import Path
 
 from celery.schedules import crontab
 
 from .envs import env
-#from booking import tasks
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -157,7 +155,7 @@ CELERY_ONCE = {
 }
 
 CELERY_BEAT_SCHEDULE = {
-    'send-notification-on-friday-afternoon': {
+    'scheduled_jobs': {
          'task': 'release_rooms',
          'schedule': crontab(minute='*'),
         },

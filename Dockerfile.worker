@@ -24,7 +24,6 @@ RUN pip install --no-cache-dir -r requirements.txt && \
 RUN rm /etc/localtime
 RUN ln -s /usr/share/zoneinfo/America/New_York  /etc/localtime
 
-
 # Development
 FROM base AS development
 EXPOSE 8000
@@ -37,6 +36,4 @@ ENTRYPOINT ["/entrypoint"]
 ARG BUILD_NO="development"
 ENV BUILD=$BUILD_NO
 ENV DJANGO_SETTINGS_MODULE="booking_core.dev_settings"
-
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
-
+CMD ["celery", "-A", "booking_core", "worker", "-l", "INFO"]

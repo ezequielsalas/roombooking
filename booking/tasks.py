@@ -1,4 +1,3 @@
-from celery.schedules import crontab
 from celery_once import QueueOnce
 from celery.utils.log import get_task_logger
 
@@ -10,10 +9,10 @@ logger = get_task_logger(__name__)
 
 
 @app.task(base=QueueOnce)
-def reserve_room(room_id, expire_at):
+def reserve_room(room_id, expire_at=None, start=None, end=None):
     logger.info('Booking...')
 
-    if not Booking.book(room_id, expire_at):
+    if not Booking.book(room_id, expire_at=expire_at, start=start, end=end):
         logger.info(f"Room {room_id} is not available")
         # TODO: Notify via websocket to the user because of the asynchronous behavior
         return
@@ -21,7 +20,6 @@ def reserve_room(room_id, expire_at):
     logger.info(f"Room {room_id} booked successfully")
 
 
-# @app.add_periodic_task(run_every=(crontab(minute='*')))
 @app.task(name="release_rooms")
 def release_rooms():
     released = Booking.release_expired()

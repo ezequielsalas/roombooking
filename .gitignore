@@ -83,6 +83,7 @@ target/
 *.pyc
 __pycache__/
 local_settings.py
+celerybeat-schedule
 
 .env
 db.sqlite3
